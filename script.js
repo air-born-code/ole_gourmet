@@ -87,11 +87,11 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   window.addEventListener('scroll', highlightNav, { passive: true });
 
-  // ---- Contact form handling ----
+  // ---- Contact form handling (Web3Forms) ----
   const form = document.getElementById('contactForm');
   const submitBtn = document.getElementById('submitBtn');
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const btnSpan = submitBtn.querySelector('span');
@@ -100,19 +100,38 @@ document.addEventListener('DOMContentLoaded', () => {
     submitBtn.disabled = true;
     submitBtn.style.opacity = '0.7';
 
-    // Simulate send (replace with real endpoint)
-    setTimeout(() => {
-      btnSpan.textContent = '✓ Enquiry Sent!';
-      submitBtn.style.background = '#4A7C59';
-      submitBtn.style.opacity = '1';
-      form.reset();
+    try {
+      const formData = new FormData(form);
+      const jsonData = Object.fromEntries(formData);
 
-      setTimeout(() => {
-        btnSpan.textContent = original;
-        submitBtn.style.background = '';
-        submitBtn.disabled = false;
-      }, 3000);
-    }, 1200);
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(jsonData)
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        btnSpan.textContent = '✓ Enquiry Sent!';
+        submitBtn.style.background = '#4A7C59';
+        submitBtn.style.opacity = '1';
+        form.reset();
+      } else {
+        throw new Error(result.message || 'Something went wrong');
+      }
+    } catch (error) {
+      btnSpan.textContent = '✗ Failed — Try Again';
+      submitBtn.style.background = '#C53030';
+      submitBtn.style.opacity = '1';
+      console.error('Form submission error:', error);
+    }
+
+    setTimeout(() => {
+      btnSpan.textContent = original;
+      submitBtn.style.background = '';
+      submitBtn.disabled = false;
+    }, 4000);
   });
 
   // ---- Parallax on hero (subtle) ----

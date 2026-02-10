@@ -354,7 +354,14 @@
           </div>
         </div>
         <div class="contact-form-wrap reveal">
-          <form class="contact-form" id="contactForm">
+          <form class="contact-form" id="contactForm" action="https://api.web3forms.com/submit" method="POST">
+            <!-- Web3Forms Configuration -->
+            <input type="hidden" name="access_key" value="1279ef13-c3b3-41c7-9d86-a4e948bf2ace">
+            <input type="hidden" name="subject" value="New Enquiry from Olé Gourmet Website">
+            <input type="hidden" name="from_name" value="Olé Gourmet Website">
+            <input type="hidden" name="redirect" value="https://ole-gourmet.vercel.app/#contact">
+            <!-- Honeypot Spam Protection -->
+            <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
             <div class="form-row">
               <div class="form-group">
                 <label for="name" class="form-label">Your Name</label>
